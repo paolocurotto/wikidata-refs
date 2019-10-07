@@ -1,0 +1,52 @@
+.loader-circle {
+    width: 40px;
+    height: 40px;
+    margin: 16px;
+    color: #1976d2;
+    animation-duration: 2.5s;
+    animation-timing-function: linear;
+    animation-delay: 0s;
+    animation-iteration-count: infinite;
+    animation-direction: normal;
+    animation-fill-mode: none;
+    animation-play-state: running;
+    animation-name: Loader-rotate;
+    stroke-dasharray: 80px, 200px;
+    stroke-dashoffset: 0
+}
+
+@keyframes Loader-rotate {
+  100% {
+      transform: rotate(360deg)
+  }
+}
+
+.loader-dash {
+    animation-duration: 1.6s;
+    animation-timing-function: ease-in-out;
+    animation-delay: 0s;
+    animation-iteration-count: infinite;
+    animation-direction: normal;
+    animation-fill-mode: none;
+    animation-play-state: running;
+    animation-name: Loader-dash;
+    stroke-dasharray: 80px, 200px;
+    stroke-dashoffset: 0px;
+    stroke: currentColor;
+}
+
+@keyframes Loader-dash {
+  0% {
+      stroke-dasharray: 1px, 200px;
+      stroke-dashoffset: 0
+  }
+  50% {
+      stroke-dasharray: 100px, 200px;
+      stroke-dashoffset: -25px
+  }
+
+  100% {
+      stroke-dasharray: 100px, 200px;
+      stroke-dashoffset: -125px
+  }
+}
