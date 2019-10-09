@@ -9,8 +9,7 @@ def wikidataGetItem():
     item = request.args.get('item')
     print('item: ' + item)
     url = "https://query.wikidata.org/sparql"
-    query = """
-    SELECT ?property ?property_value_Label ?reference {
+    query = """SELECT ?propNumber ?property ?property_value_Label ?property_value_ (GROUP_CONCAT (DISTINCT ?reference; SEPARATOR=", ") AS ?references) {
   
     VALUES (?item) {(wd:Q""" + item + """)}  {	
 		BIND("__Name__"@en AS ?property ) .
@@ -48,9 +47,10 @@ def wikidataGetItem():
     }
   
     SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
-    } ORDER BY xsd:integer(?propNumber) ?property_ ?property_value_
+    } 
+    GROUP BY ?propNumber ?property ?property_value_Label ?property_value_
+    ORDER BY xsd:integer(?propNumber) ?property_ ?property_value_
     """
-
     headers = {'Accept': 'application/sparql-results+json'}
     results = requests.get(url, params = { 'format': 'json', 'query': query }, headers=headers)
     results = results.json()

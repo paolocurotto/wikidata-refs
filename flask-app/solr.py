@@ -6,7 +6,6 @@ solr = Blueprint('solr', __name__)
 @solr.route('/solr/', methods=['POST'])
 def solrQueryDocument():
 
-    print('RECIEVED POST')
     data = request.get_json()
     print(data)
 
