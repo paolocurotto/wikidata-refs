@@ -9,14 +9,13 @@ def solrQueryDocument():
     data = request.get_json()
     print(data)
 
-    name     = data['name']
-    property = data['property']
-    value    = data['value']
-
-    print(name)
-    print(property)
-    print(value)
-
+    name            = data['name']
+    property        = data['property']
+    value           = data['value']
+    Q               = data['Q']
+    limitToItemUrls = data['limitToItemUrls']
+    
+    limit_search = (' AND Q:'+Q) if limitToItemUrls else ''
 
     results = requests.get(
         'http://localhost:8983/solr/ABCDE_core/select', 
@@ -24,12 +23,9 @@ def solrQueryDocument():
             'fl': 'url, Q',
             'hl.fl': 'content',
             'hl': 'on',
-            'q': 'content:(' + name + ' ' + property + ' ' + value + ')',
+            'q': 'content:(' + name + ' ' + property + ' ' + value + ')' + limit_search,
             'rows': '3',
         }
     )
-    results = results.json()
-
-    print(results)
-    
+    results = results.json()    
     return results

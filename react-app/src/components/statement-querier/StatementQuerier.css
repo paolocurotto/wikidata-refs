@@ -28,6 +28,14 @@
     margin: 0 0 15px 0;
 }
 
+.search-button-container {
+    display: flex;
+}
+
+.search-button {
+    padding: 5px;
+}
+
 
 .statement-text-box {
     display: flex;
@@ -64,7 +72,20 @@
     border-bottom: 1px solid rgb(170, 170, 170);
 }
 
+.highlight-text {
+    font-weight: 400;
+}
+
 
 em {
     background-color: yellow;
+}
+
+.no-results-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #999;
+    margin: 15px 0 0 0;
+    padding: 20px 20px 0 20px;
 }

@@ -3,28 +3,33 @@ import axios from 'axios';
 import './App.css';
 import Loader from './components/loader/Loader'
 import StatementQuerier from './components/statement-querier/StatementQuerier';
+import Loader2 from './components/loader/Loader2';
 
 const App = () => {
-
-    const [itemQ, setItemQ] = useState(935)
+    const [itemQInput, setItemQInput] = useState('')
+    const [itemQ, setItemQ] = useState('')
     const [data, setData] = useState([])
     const [currentItem, setcurrentItem] = useState({ name: '', description: '', also_known_as: [] })
     const [loading, setLoading] = useState(false)
+    const [searched, setSearched] = useState(false)
     const inputRef = useRef(null)
 
     useEffect(() => { inputRef.current.focus() }, [])
 
     async function queryFlask() {
+        setLoading(true)
+        setSearched(true)
+        setcurrentItem({ name: '', description: '' })
+        setItemQ(itemQInput)
         try {
-            setLoading(true)
-            setcurrentItem({ name: '', description: '' })
             const res = await axios({
                 method: 'get',
                 url: '/wikidata',
-                params: { item: itemQ },
+                params: { item: itemQInput },
             })
-
+            console.log('fetched')
             setData(res.data.results.bindings)
+            
             let name = ''
             let description = ''
             let also_known_as = []
@@ -45,26 +50,36 @@ const App = () => {
         }
     }
 
+    const noItemFound = (<div className="no-item-found">No item found</div>)
+
+    console.log('re-render')
+
     return (
         <div className="App">
             <div className="App-header"><p>Wikidata refs</p></div>
+
+            <Loader2 />
+
             <div className="main-content">
                 <div className="title">Search Wikidata item by Identifier</div>
                 <div className="search-box">
                     <div className="Q">Q</div>
-                    <input ref={inputRef} onChange={(e) => setItemQ(e.target.value)} className="q-input" />
+                    <input value={itemQInput} ref={inputRef} onChange={(e) => setItemQInput(e.target.value.replace(/\D/,''))} className="q-input" />
                 </div>
-                <button onClick={() => queryFlask()} className="search-button">Search</button>
+                <button onClick={queryFlask} className="search-statements-button">Search</button>
 
-                <div className="info-box">
-                    <div className="item-text-box"><div className="item-text"> Item Name:  </div> {currentItem.name} </div>
-                    <div className="item-text-box"><div className="item-text"> Description:</div> {currentItem.description} </div>
-                </div>
 
                 {
                     (loading === true ? <Loader /> :
-                        (data.length === 0 ? '' :
-                            <div className="table-wrapper">
+                        (data.length === 0 ? !searched ? '' : noItemFound :
+
+                            <>
+                                <div className="info-box">
+                                    <div className="item-text-box"><div className="item-text"> Item Name:  </div> {currentItem.name} </div>
+                                    <div className="item-text-box"><div className="item-text"> Description:</div> {currentItem.description} </div>
+                                </div>
+
+                                <div className="table-wrapper">
                                 <div className="statements-title">Statements</div>
                                 
                                 {
@@ -81,6 +96,7 @@ const App = () => {
 
                                         return <StatementQuerier
                                             key={index}
+                                            Q={itemQ}
                                             name={currentItem.name}
                                             also_known_as={currentItem.also_known_as}
                                             property={property}
@@ -92,6 +108,7 @@ const App = () => {
                                     })
                                 }
                             </div>
+                            </>
                         )
                     )
                 }

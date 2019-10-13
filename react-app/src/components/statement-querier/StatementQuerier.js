@@ -4,15 +4,15 @@ import './StatementQuerier.css'
 
 const StatementQuerier = (props) => {
 
-    const { name, also_known_as, property, property_number, value, references } = props;
+    const { Q, name, also_known_as, property, property_number, value, references } = props;
     const { type, value: value_url } = props.value_url
 
-    const [urls, setUrls] = useState({})
-    const [results, setResults] = useState(false)
+    const [urls, setUrls] = useState('')
     const [searchedAltLabels, setSearchedAltLabels] = useState(false)
     const [searchingAltLabels, setSearchingAltLabels] = useState(false)
     const [propertyAltLabels, setPropertyAltLabels] = useState([])
     const [valueAltLabels, setValueAltLabels] = useState([])
+    const [limitToItemUrls, setLimitToItemUrls] = useState(false)
 
 
     async function querySolr() {
@@ -23,13 +23,15 @@ const StatementQuerier = (props) => {
                 data: {
                     name: name,
                     property: property,
-                    value: value
+                    value: value,
+                    Q: Q,
+                    limitToItemUrls: limitToItemUrls,
                 },
                 headers: { 'Content-Type': 'application/json' },
             })
 
+            console.log(res.data)
             setUrls(res.data)
-            setResults(true)
 
         } catch (error) {
             console.log(error)
@@ -52,8 +54,6 @@ const StatementQuerier = (props) => {
                 },
                 headers: { 'Content-Type': 'application/json' },
             })
-
-            //console.log(res)
             setPropertyAltLabels(res.data.prop_alt_labels)
             setValueAltLabels(res.data.value_alt_labels)
             setSearchedAltLabels(true)
@@ -64,6 +64,8 @@ const StatementQuerier = (props) => {
         }
 
     } 
+
+    console.log('re-render')
 
     const referenceIcon = (references === '') ? <i className="cross material-icons">clear</i> : <i className="check material-icons">done</i>
 
@@ -83,7 +85,6 @@ const StatementQuerier = (props) => {
                         <span className="statement-text"> Has external reference? </span>
                         <span className="statement-value"> {referenceIcon} </span>
                     </div>
-
                     {
                         !searchedAltLabels ? '' : (
                             <div>
@@ -93,20 +94,23 @@ const StatementQuerier = (props) => {
                             </div>
                         )
                     }
-
                 </div>
 
                 <div className="statement-search-box">
-                    <label className="search-checkbox" ><input type="checkbox" />Search only URLs that appear in Q wikipedia Page</label>
+                    <label className="search-checkbox" >
+                        <input type="checkbox" onChange={(e) => { setLimitToItemUrls(e.target.checked) }} />
+                        Search only URLs that appear in Q wikipedia Page
+                    </label>
                     <label className="search-checkbox" ><input onClick={searchSimilarTerms} type="checkbox" />Search using similar terms</label>
-                    <div style={{display: 'flex'}}><button style={{padding: '5px'}} onClick={querySolr}>Search References</button></div>
-
+                    <div className="search-button-container"><button className="search-button" onClick={querySolr}>Search References</button></div>
                 </div>
 
             </div>
 
             {
-                (!results) ? '' : (
+                (!urls) ? '' : (urls.response.numFound === 0) ? 
+                    <div className="no-results-box">No results found</div> : 
+                    (
                     <div className="statement-results">
                         {
                             urls.response.docs.map(({ url }, index) => {
@@ -114,18 +118,16 @@ const StatementQuerier = (props) => {
                                 return (
                                     <div className={c} key={index}>
                                         <a href={url}>{url}</a>
-                                        <p dangerouslySetInnerHTML={{ __html: urls.highlighting[url].content[0] }} />
+                                        <p className="highlight-text" dangerouslySetInnerHTML={{ __html: urls.highlighting[url].content[0] }} />
                                     </div>
-
                                 )
                             })
                         }
                     </div>
                 )
             }
-
         </div>
     )
 }
 
-export default StatementQuerier
+export default React.memo(StatementQuerier)

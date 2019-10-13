@@ -7,7 +7,6 @@ wikidata = Blueprint('wikidata', __name__)
 def wikidataGetItem():
 
     item = request.args.get('item')
-    print('item: ' + item)
     url = "https://query.wikidata.org/sparql"
     query = """SELECT ?propNumber ?property ?property_value_Label ?property_value_ (GROUP_CONCAT (DISTINCT ?reference; SEPARATOR=", ") AS ?references) {
   
