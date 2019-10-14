@@ -1,9 +1,9 @@
 from flask import Blueprint, request
 import requests
 
-search_terms = Blueprint('search_terms', __name__)
+search_similar_terms = Blueprint('search_similar_terms', __name__)
 
-@search_terms.route('/wikidata/search_terms', methods=['POST'])
+@search_similar_terms.route('/wikidata/search_similar_terms', methods=['POST'])
 def wikidata_search_similar_terms():
 
     data = request.get_json()
@@ -44,11 +44,6 @@ def wikidata_search_similar_terms():
     headers = {'Accept': 'application/sparql-results+json'}
     results = requests.get(url, params = { 'format': 'json', 'query': query }, headers=headers)
     results = results.json()
-
-    #print(results)
-
-    #return results
-
     
     response_data = {
         'prop_alt_labels': [],

@@ -1,11 +1,11 @@
 import React from 'react'
 import './Loader.css'
 
-const Loader = () => {
+const LoaderSmall = () => {
 
     return (
         <div className="spinner">
-            <div className="spinner-container">
+            <div className="spinner-container-small">
                 <div className="spinner-layer">
                     <div className="circle-clipper left">
                         <div className="circle">
@@ -22,4 +22,4 @@ const Loader = () => {
 
 }
 
-export default Loader
+export default LoaderSmall
