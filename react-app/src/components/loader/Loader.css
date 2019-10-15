@@ -12,7 +12,7 @@
     --spinner-expand-contract-duration: 1333ms;      
     --spinner-full-cycle-duration: 5332ms;
     --spinner-cooldown-duration: 400ms;
-    --spinner-color: rgb(0, 97, 187);
+    --spinner-color: var(--color-2);
     --spinner-stroke-width: 3px;
 }
 
@@ -25,7 +25,7 @@
     --spinner-expand-contract-duration: 1333ms;      
     --spinner-full-cycle-duration: 5332ms;
     --spinner-cooldown-duration: 400ms;
-    --spinner-color: rgb(0, 97, 187);
+    --spinner-color: var(--color-2);
     --spinner-stroke-width: 2px;
 }
 

@@ -57,10 +57,12 @@ const StatementQuerier = (props) => {
                         <span className="statement-text"> Value: </span>
                         <span className="statement-value"> {value} </span>
                     </div>
+                    {/*
                     <div className='statement-text-box'>
                         <span className="statement-text"> Has external reference? </span>
                         <span className="statement-value"> {referenceIcon} </span>
                     </div>
+                    */}        
                 </div>
 
                 <div className="statement-search-box">
@@ -82,7 +84,12 @@ const StatementQuerier = (props) => {
                         {searchingAltLabels ? <LoaderSmall /> : searchedAltLabels ? <i className="check material-icons">done</i> : ''}
                     </div>
 
-                    <div className="search-button-container"><button className="search-button" onClick={querySolr}>Search References</button></div>
+                    <div className="search-button-container">
+
+                        <button className={searchingAltLabels ? 'search-button-disabled' : 'search-button'}
+                            onClick={querySolr}>Search References</button>
+
+                    </div>
                 </div>
 
             </div>
@@ -95,8 +102,8 @@ const StatementQuerier = (props) => {
                                 docs.map((doc, index) => {
                                     let c = (docs.length - 1 === index) ? '' : 'statement-highlight'
                                     return (
-                                        <div className={c} key={index}>
-                                            <a href={doc.url}>{doc.url}</a>
+                                        <div className="statement-highlight" key={index}>
+                                            {(index + 1) + '.  '}<a href={doc.url}>{doc.url}</a>
                                             <p className="highlight-text" dangerouslySetInnerHTML={{ __html: doc.highlight }} />
                                         </div>
                                     )

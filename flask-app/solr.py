@@ -38,8 +38,9 @@ def solrQueryDocument():
         'http://192.168.18.104:8983/solr/ABCDE_core/select', 
         params = { 
             'fl': 'url, Q',
-            'hl.fl': 'content',
             'hl': 'on',
+            'hl.method': 'unified',
+            'hl.fl': 'content',
             #'q': 'content:(' + name + ' ' + property + ' ' + alt_labels_string + ' ' + value + ')' + limit_search,
             'q': 'content:(' + data_to_query + ')' + limit_search,
             'rows': '3',

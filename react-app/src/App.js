@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
 import './App.css';
 import StatementQuerier from './components/statement-querier/StatementQuerier';
 import Loader from './components/loader/Loader';
@@ -50,8 +49,14 @@ const App = () => {
 
                                 <>
                                     <div className="info-box">
-                                        <div className="item-text-box"><div className="item-text"> Item Name: </div><div className="item-text-cap">{currentItem.name}</div></div>
-                                        <div className="item-text-box"><div className="item-text"> Description: </div><div className="item-text-cap">{currentItem.description}</div></div>
+                                        <div className="item-text-box">
+                                            <div className="item-text"> Item name: </div>
+                                            <div className="item-text-cap">{currentItem.name}</div>
+                                        </div>
+                                        <div className="item-text-box">
+                                            <div className="item-text"> Description: </div>
+                                            <div className="item-text-cap">{currentItem.description}</div>
+                                        </div>
                                     </div>
 
                                     <div className="table-wrapper">
