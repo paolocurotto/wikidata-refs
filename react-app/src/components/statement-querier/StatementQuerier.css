@@ -3,7 +3,7 @@
     flex-direction: column;
     padding: 0 0 50px 0;
     margin-bottom: 50px;
-    border-bottom: 1px solid rgb(170, 170, 170);
+    border-bottom: 1px solid rgb(148, 148, 148);
 }
 
 .statement-wrapper:last-of-type {
@@ -154,9 +154,10 @@
 }
 
 .statement-results {
-    border: 1px solid rgb(202, 202, 202);
+    /*border: 1px solid rgb(202, 202, 202);*/
     margin: 15px 0 0 0;
     padding: 30px 30px 0 30px;
+    background-color: #f6f6f6;
 }
 
 .statement-highlight {
@@ -170,7 +171,7 @@
 }
 
 .highlight-text {
-    font-weight: 400;
+    color: #333;
     margin: 20px 0px 30px 0;
 }
 

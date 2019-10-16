@@ -41,6 +41,7 @@ def solrQueryDocument():
             'hl': 'on',
             'hl.method': 'unified',
             'hl.fl': 'content',
+            #'hl.fragsize': '100',
             #'q': 'content:(' + name + ' ' + property + ' ' + alt_labels_string + ' ' + value + ')' + limit_search,
             'q': 'content:(' + data_to_query + ')' + limit_search,
             'rows': '3',
