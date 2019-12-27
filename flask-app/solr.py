@@ -17,21 +17,33 @@ def solrQueryDocument():
     Q               = data['Q']
     limitToItemUrls = data['limitToItemUrls']
     altLabels       = data['altLabelsData']['altLabels']
+    item_AltLabels  = data['altLabelsData']['item_altLabels']
     prop_AltLabels  = data['altLabelsData']['prop_altLabels']
+    val_AltLabels   = data['altLabelsData']['val_altLabels']
 
-    
+    using_3_values = False
+
     # Append alternative labels to query in case user asked
     alt_labels_string = ' '
-    if (altLabels): 
+    if (altLabels):
+
+        if (using_3_values):
+            for label in item_AltLabels:
+                alt_labels_string = alt_labels_string + label + ' '
+        
         for label in prop_AltLabels:
-            alt_labels_string = alt_labels_string + label + ' '        
+            alt_labels_string = alt_labels_string + label + ' ' 
+        
+        if (using_3_values):
+            for label in val_AltLabels:
+                alt_labels_string = alt_labels_string + label + ' '        
 
     # Append limit search to documents that appear in item wikipedia page
     limit_search = (' AND Q:'+Q) if limitToItemUrls else ''
 
     data_to_query = name + ' ' + property + ' ' + alt_labels_string + ' ' + value
     
-    # Fix: Delete other problematic characters too
+    # Fix: There might be other problematic characters
     data_to_query = data_to_query.replace(':', '')
 
     results = requests.get(
@@ -48,11 +60,11 @@ def solrQueryDocument():
         }
     )
     results = results.json()
-    data = []
+    docs = []
     for url in results['highlighting']:
         doc = {}
         doc['url'] = url
         doc['highlight'] = results['highlighting'][url]['content'][0]
-        data.append(doc)
+        docs.append(doc)
 
-    return { 'docs': data }
+    return { 'docs': docs }

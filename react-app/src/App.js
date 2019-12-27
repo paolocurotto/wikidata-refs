@@ -20,12 +20,11 @@ const App = () => {
         setItemQ(itemQInput)
         const [name, description, also_known_as, statements, status] = await get_wikidata_item(itemQInput)
         setData(statements)
-        setcurrentItem({ name: name, description: description, also_known_as: also_known_as })
+        setcurrentItem({ name, description, also_known_as })
         setLoading(false)
         if (!status) {
             console.log('Error trying to fetch wikidata item statements')
         }
-
     }
 
     const noItemFound = (<div className="no-item-found">No item found</div>)

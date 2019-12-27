@@ -6,19 +6,22 @@ import { get_solr_docs, get_similar_terms } from '../../queries'
 
 const StatementQuerier = (props) => {
 
-    const { Q, name, also_known_as = [], property, property_number, value, references } = props;
+    const { Q, name, also_known_as, property, property_number, value, references } = props;
     const { type, value: value_url } = props.value_url
 
-    const [docs, setDocs] = useState('')
-    const [searchedAltLabels, setSearchedAltLabels] = useState(false)
-    const [searchingAltLabels, setSearchingAltLabels] = useState(false)
-    const [propertyAltLabels, setPropertyAltLabels] = useState([])
-    const [valueAltLabels, setValueAltLabels] = useState([])
-    const [limitToItemUrls, setLimitToItemUrls] = useState(false)
+    const [docs,                setDocs]                = useState('')
+    const [searchedAltLabels,   setSearchedAltLabels]   = useState(false)
+    const [searchingAltLabels,  setSearchingAltLabels]  = useState(false)
+    const [propertyAltLabels,   setPropertyAltLabels]   = useState([])
+    const [valueAltLabels,      setValueAltLabels]      = useState([])
+    const [limitToItemUrls,     setLimitToItemUrls]     = useState(false)
     const [searchWithAltLabels, setSearchWithAltLabels] = useState(false)
 
     async function querySolr() {
-        const altLabels_data = { altLabels: searchWithAltLabels, prop_altLabels: propertyAltLabels }
+        const altLabels_data = { altLabels: searchWithAltLabels, item_altLabels: also_known_as, prop_altLabels: propertyAltLabels, val_altLabels: valueAltLabels }
+        console.log(also_known_as)
+        console.log(propertyAltLabels)
+        console.log(valueAltLabels)
         const [docs, status] = await get_solr_docs(name, property, value, Q, limitToItemUrls, altLabels_data)
         setDocs(docs)
         if (!status) {
@@ -35,12 +38,8 @@ const StatementQuerier = (props) => {
         setSearchingAltLabels(false)
         setPropertyAltLabels(prop_alt_labels)
         setValueAltLabels(value_alt_labels)
-        if (!status) {
-            console.log('Error getting alternative labels')
-        }
-        else {
-            setSearchedAltLabels(true)
-        }
+        if (!status) { console.log('Error getting alternative labels') }
+        else { setSearchedAltLabels(true) }
     }
 
     const referenceIcon = (references === '') ? <i className="cross material-icons">clear</i> : <i className="check material-icons">done</i>
@@ -88,7 +87,7 @@ const StatementQuerier = (props) => {
 
                         <button className={searchingAltLabels ? 'search-button-disabled' : 'search-button'}
                             onClick={querySolr}>Search References</button>
-
+                        
                     </div>
                 </div>
 
