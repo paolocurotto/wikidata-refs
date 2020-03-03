@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './App.css';
 import StatementQuerier from './components/statement-querier/StatementQuerier';
 import Loader from './components/loader/Loader';
 import { get_wikidata_item } from './queries'
+import './App.css';
 
 const App = () => {
-    const [itemQInput, setItemQInput] = useState('')
-    const [itemQ, setItemQ] = useState('')
-    const [data, setData] = useState('')
+    const [itemQInput, setItemQInput]   = useState('')
+    const [itemQ, setItemQ]             = useState('')
+    const [data, setData]               = useState('')
     const [currentItem, setcurrentItem] = useState({ name: '', description: '', also_known_as: [] })
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading]         = useState(false)
     const inputRef = useRef(null)
+
+    const identifiers = [298];
 
     useEffect(() => { inputRef.current.focus() }, [])
 
@@ -34,6 +36,20 @@ const App = () => {
             <div className="App-header"><p>Wikidata refs</p></div>
             <div className="main-content">
                 <div className="title">Search Wikidata item by Identifier</div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', cursor: 'pointer', padding: '0 40px', margin: '0 30px' }}>
+                    {identifiers.map((identifier) => {
+                        return <div style={{ backgroundColor: (identifier === itemQ) ? 'tomato' : ''}} onClick={async () => {
+                            setLoading(true);
+                            setcurrentItem({ name: '', description: '' });
+                            setItemQ(identifier);
+                            setItemQInput(identifier);
+                            const [name, description, also_known_as, statements, status] = await get_wikidata_item(identifier);
+                            setData(statements);
+                            setcurrentItem({ name, description, also_known_as });
+                            setLoading(false);
+                        }}>{' ' + identifier + '-'}</div>
+                    })}
+                </div>
                 <div className="search-box">
                     <div className="Q">Q</div>
                     <input value={itemQInput} ref={inputRef} onChange={(e) => setItemQInput(e.target.value.replace(/\D/, ''))} className="q-input" />
@@ -67,11 +83,11 @@ const App = () => {
                                                 if (['__Name__', '__AlsoKnownAs__', '__Description__'].includes(entry.property.value)) { return null }
                                                 if (entry.property_value_Label.value.includes('http://commons.wikimedia.org/')) { return null }
 
-                                                let property = entry.property.value
-                                                let property_number = entry.propNumber.value
-                                                let value = entry.property_value_Label.value
-                                                let value_url = entry.property_value_
-                                                let references = entry.references.value
+                                                const property        = entry['property']['value']
+                                                const property_number = entry.propNumber.value
+                                                const value           = entry.property_value_Label.value
+                                                const value_url       = entry.property_value_
+                                                const references      = entry.references.value
 
                                                 return <StatementQuerier
                                                     key={index}

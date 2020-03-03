@@ -21,7 +21,7 @@ def solrQueryDocument():
     prop_AltLabels  = data['altLabelsData']['prop_altLabels']
     val_AltLabels   = data['altLabelsData']['val_altLabels']
 
-    using_3_values = False
+    using_3_values = True
 
     # Append alternative labels to query in case user asked
     alt_labels_string = ' '
@@ -47,7 +47,7 @@ def solrQueryDocument():
     data_to_query = data_to_query.replace(':', '')
 
     results = requests.get(
-        'http://192.168.18.104:8983/solr/ABCDE_core/select', 
+        'http://localhost:8983/solr/crawl_index/select', 
         params = { 
             'fl': 'url, Q',
             'hl': 'on',
@@ -56,7 +56,7 @@ def solrQueryDocument():
             #'hl.fragsize': '100',
             #'q': 'content:(' + name + ' ' + property + ' ' + alt_labels_string + ' ' + value + ')' + limit_search,
             'q': 'content:(' + data_to_query + ')' + limit_search,
-            'rows': '3',
+            'rows': '5',
         }
     )
     results = results.json()

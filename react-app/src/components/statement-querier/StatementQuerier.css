@@ -3,13 +3,13 @@
     background: white;
     display: flex;
     flex-direction: column;
-    margin-bottom: 50px;
+    margin-bottom: 15px;
     box-shadow:  0 1px 3px 1px rgba(60,64,67,.15);}
 
 .statement-wrapper:last-of-type {
     display: flex;
     flex-direction: column;
-    margin-bottom: 50px;
+    margin-bottom: 10px;
     border-bottom: none;
     box-shadow: 0 1px 3px 0 rgba(0,0,0,.1);
 }
@@ -53,7 +53,7 @@
     cursor: pointer;
     height: 0;
     width: 0;
-    
+
 }
 
 .checkmark {
@@ -96,6 +96,7 @@
 
 .search-button-container {
     display: flex;
+    align-items: center;
     margin: 20px 0 0 0;
 }
 
@@ -118,6 +119,7 @@
 
 .search-button-disabled {
     pointer-events: none;
+    margin: 0 20px 0 0;
     opacity: 0.4;
     color: #424d61;
     padding: 0.9rem 0.9rem;
@@ -146,7 +148,6 @@
 }
 
 .check {
-    /*color: rgb(97, 180, 59);*/
     color: var(--color-2)
 }
 
@@ -165,16 +166,30 @@
 .statement-highlight {
     margin-bottom: 30px;
     border-bottom: 1px solid rgb(202, 202, 202);
+
 }
 
 .statement-highlight:last-of-type {
-    margin-bottom: 30px;
     border-bottom: none;
+}
+
+.highlight-url-container {
+    display: flex;
+}
+
+.highlight-url {
+    margin-left: 0.5em;
+    overflow: hidden;
+    display: -webkit-box;
 }
 
 .highlight-text {
     color: #333;
     margin: 20px 0px 30px 0;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 10;
+    -webkit-box-orient: vertical;
 }
 
 em {
@@ -186,6 +201,6 @@ em {
     justify-content: center;
     align-items: center;
     color: #999;
-    margin: 15px 0 0 0;
-    padding: 20px 20px 0 20px;
+    margin: 0 0 20px 0;
+    padding: 20px;
 }

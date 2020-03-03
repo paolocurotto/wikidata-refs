@@ -13,6 +13,7 @@ export async function get_wikidata_item(item_number) {
             url: '/wikidata',
             params: { item: item_number },
         })
+        console.log(res);
         statements = res.data.results.bindings
         status = true
         for (const item of res.data.results.bindings) {
