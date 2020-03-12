@@ -14,16 +14,16 @@ const StatementQuerier = (props) => {
     const [searchingAltLabels,  setSearchingAltLabels]  = useState(false);
     const [propertyAltLabels,   setPropertyAltLabels]   = useState([]);
     const [valueAltLabels,      setValueAltLabels]      = useState([]);
-    const [limitToItemUrls,     setLimitToItemUrls]     = useState(false);
+    const [limitToItemUrls,     setLimitToItemUrls]     = useState(true);
     const [searchWithAltLabels, setSearchWithAltLabels] = useState(false);
     const [queryingSolr,        setQueryingSolr]        = useState(false) ;
 
     async function querySolr() {
         const altLabels_data = { altLabels: searchWithAltLabels, item_altLabels: also_known_as, prop_altLabels: propertyAltLabels, val_altLabels: valueAltLabels }
         setQueryingSolr(true);
-        const [docs, status] = await get_solr_docs(name, property, value, Q, limitToItemUrls, altLabels_data);
+        const [solr_docs, status] = await get_solr_docs(name, property, value, Q, limitToItemUrls, altLabels_data);
         setQueryingSolr(false);
-        setDocs(docs);
+        setDocs(solr_docs);
         if (!status) {
             console.log('Error getting documents from solr');
         }
@@ -70,7 +70,7 @@ const StatementQuerier = (props) => {
                         <label className="search-checkbox" >
                             <input type="checkbox" onChange={(e) => { setLimitToItemUrls(e.target.checked) }} checked={limitToItemUrls}/>
                             <span className="checkmark"></span>
-                            Search only URLs that appear in Q wikipedia Page
+                            Limit search to Item's URLs
                         </label>
                     </div>
 
@@ -93,7 +93,7 @@ const StatementQuerier = (props) => {
             </div>
 
             {
-                (docs === '') ? '' : (docs.length === 0) ?
+                (!docs) ? '' : (docs.length === 0) ?
                     <div className="no-results-box">No results found</div>
                     : (
                         <div className="statement-results">

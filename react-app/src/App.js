@@ -12,8 +12,6 @@ const App = () => {
     const [loading, setLoading]         = useState(false)
     const inputRef = useRef(null)
 
-    const identifiers = [298];
-
     useEffect(() => { inputRef.current.focus() }, [])
 
     async function queryFlask() {
@@ -36,20 +34,6 @@ const App = () => {
             <div className="App-header"><p>Wikidata refs</p></div>
             <div className="main-content">
                 <div className="title">Search Wikidata item by Identifier</div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', cursor: 'pointer', padding: '0 40px', margin: '0 30px' }}>
-                    {identifiers.map((identifier) => {
-                        return <div style={{ backgroundColor: (identifier === itemQ) ? 'tomato' : ''}} onClick={async () => {
-                            setLoading(true);
-                            setcurrentItem({ name: '', description: '' });
-                            setItemQ(identifier);
-                            setItemQInput(identifier);
-                            const [name, description, also_known_as, statements, status] = await get_wikidata_item(identifier);
-                            setData(statements);
-                            setcurrentItem({ name, description, also_known_as });
-                            setLoading(false);
-                        }}>{' ' + identifier + '-'}</div>
-                    })}
-                </div>
                 <div className="search-box">
                     <div className="Q">Q</div>
                     <input value={itemQInput} ref={inputRef} onChange={(e) => setItemQInput(e.target.value.replace(/\D/, ''))} className="q-input" />

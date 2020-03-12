@@ -3,15 +3,13 @@ const express = require('express');
 const router = express.Router();
 
 
-const SOLR_URL = 'http://localhost:8983/solr/crawl_index/select';
+//const SOLR_URL = 'http://localhost:8983/solr/crawl_index/select';
+const SOLR_URL = 'http://localhost:8983/solr/ABCDE_core/select';
 
 router.post('/solr', async (req, res) => {
 
     const { name, property, value, Q, limitToItemUrls } = req.body;
     const { altLabels, item_altLabels, prop_altLabels, val_altLabels } = req.body['altLabelsData'];
-
-    console.log('SOLR');
-    console.log(req.body);
 
     // Append alternative labels to query in case user asked
     let alt_labels_string = '';
@@ -21,13 +19,13 @@ router.post('/solr', async (req, res) => {
         alt_labels_string += appendLabels(val_altLabels );
     }
 
-    // Append limit search to documents that appear in item wikipedia page
+    // Append limit search to documents that appear in item's wikipedia page
     const limit_search = (limitToItemUrls) ? (' AND Q:'+Q)  : '';
 
     let data_to_query = `${name} ${property} ${alt_labels_string} ${value}`;
 
     // Fix to problematic charcaters
-    data_to_query = data_to_query.replace(':', '')
+    data_to_query = data_to_query.replace(/:/g, '')
 
     try {
         const solr_res = await axios({
