@@ -5,29 +5,29 @@ import { get_wikidata_item } from './queries'
 import './App.css';
 
 const App = () => {
-    const [itemQInput, setItemQInput]   = useState('')
-    const [itemQ, setItemQ]             = useState('')
-    const [data, setData]               = useState('')
-    const [currentItem, setcurrentItem] = useState({ name: '', description: '', also_known_as: [] })
-    const [loading, setLoading]         = useState(false)
-    const inputRef = useRef(null)
+    const [itemQInput, setItemQInput]   = useState('');
+    const [itemQ, setItemQ]             = useState('');
+    const [data, setData]               = useState('');
+    const [currentItem, setcurrentItem] = useState({ name: '', description: '', also_known_as: [] });
+    const [loading, setLoading]         = useState(false);
+    const inputRef = useRef(null);
 
-    useEffect(() => { inputRef.current.focus() }, [])
+    useEffect(() => { inputRef.current.focus() }, []);
 
     async function queryFlask() {
-        setLoading(true)
-        setcurrentItem({ name: '', description: '' })
-        setItemQ(itemQInput)
-        const [name, description, also_known_as, statements, status] = await get_wikidata_item(itemQInput)
-        setData(statements)
-        setcurrentItem({ name, description, also_known_as })
-        setLoading(false)
+        setLoading(true);
+        setcurrentItem({ name: '', description: '' });
+        setItemQ(itemQInput);
+        const [name, description, also_known_as, statements, status] = await get_wikidata_item(itemQInput);
+        setData(statements);
+        setcurrentItem({ name, description, also_known_as });
+        setLoading(false);
         if (!status) {
-            console.log('Error trying to fetch wikidata item statements')
+            console.log('Error trying to fetch wikidata item statements');
         }
     }
 
-    const noItemFound = (<div className="no-item-found">No item found</div>)
+    const noItemFound = (<div className="no-item-found">No item found</div>);
 
     return (
         <div className="App">
@@ -63,15 +63,11 @@ const App = () => {
 
                                         {
                                             data.map((entry, index) => {
-                                                // Filter some
-                                                if (['__Name__', '__AlsoKnownAs__', '__Description__'].includes(entry.property.value)) { return null }
-                                                if (entry.property_value_Label.value.includes('http://commons.wikimedia.org/')) { return null }
-
-                                                const property        = entry['property']['value']
-                                                const property_number = entry.propNumber.value
-                                                const value           = entry.property_value_Label.value
-                                                const value_url       = entry.property_value_
-                                                const references      = entry.references.value
+                                                const property        = entry['property']['value'];
+                                                const property_number = entry.propNumber.value;
+                                                const value           = entry.property_value_Label.value;
+                                                const value_url       = entry.property_value_;
+                                                const references      = entry.references.value;
 
                                                 return <StatementQuerier
                                                     key={index}

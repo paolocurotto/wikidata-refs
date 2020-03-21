@@ -30,16 +30,20 @@ const StatementQuerier = (props) => {
     }
 
     async function searchSimilarTerms(e) {
-        setSearchWithAltLabels(e.target.checked)
-        if (!e.target.checked) { return }
-        if (searchedAltLabels || searchingAltLabels) { return }
-        setSearchingAltLabels(true)
-        const [prop_alt_labels, value_alt_labels, status] = await get_similar_terms(property_number, type, value_url)
-        setSearchingAltLabels(false)
-        setPropertyAltLabels(prop_alt_labels)
-        setValueAltLabels(value_alt_labels)
-        if (!status) { console.log('Error getting alternative labels') }
-        else { setSearchedAltLabels(true) }
+        setSearchWithAltLabels(e.target.checked);
+        if (!e.target.checked || searchedAltLabels || searchingAltLabels) { 
+            return;
+        }
+        setSearchingAltLabels(true);
+        const [prop_alt_labels, value_alt_labels, status] = await get_similar_terms(property_number, type, value_url);
+        setSearchingAltLabels(false);
+        setPropertyAltLabels(prop_alt_labels);
+        setValueAltLabels(value_alt_labels);
+        if (!status) { 
+            console.log('Error getting alternative labels');
+        } else { 
+            setSearchedAltLabels(true); 
+        }
     }
 
     const referenceIcon = (references === '') ? <i className="cross material-icons">clear</i> : <i className="check material-icons">done</i>
@@ -100,8 +104,11 @@ const StatementQuerier = (props) => {
                             {
                                 docs.map((doc, index) => {
                                     return (
-                                        <div className="statement-highlight" key={index}>
-                                            <div className="highlight-url-container"><b>{(index + 1) + '.  '}</b><a className="highlight-url" href={doc.url}>{doc.url}</a></div>
+                                        <div className="statement-highlight" key={doc.url}>
+                                            <div className="highlight-url-container">
+                                                <b>{(index + 1) + '.  '}</b>
+                                                <a className="highlight-url" href={doc.url}>{doc.url}</a>
+                                            </div>
                                             <p className="highlight-text" dangerouslySetInnerHTML={{ __html: doc.highlight }} />
                                         </div>
                                     )

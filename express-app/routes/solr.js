@@ -3,8 +3,8 @@ const express = require('express');
 const router = express.Router();
 
 
-//const SOLR_URL = 'http://localhost:8983/solr/crawl_index/select';
-const SOLR_URL = 'http://localhost:8983/solr/ABCDE_core/select';
+const SOLR_URL = 'http://localhost:8983/solr/crawl_index/select';
+//const SOLR_URL = 'http://localhost:8983/solr/ABCDE_core/select';
 
 router.post('/solr', async (req, res) => {
 

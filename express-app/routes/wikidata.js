@@ -16,8 +16,8 @@ router.get('/wikidata', async (req, res) => {
             params: { 'format': 'json', 'query': query(item_identifier) },
         });
 
-        //console.log(res);
         const parsed_results = parseResults(wikidata_res.data.results.bindings);
+        console.log(parsed_results);
         res.json(parsed_results);
     }
     catch (error) {
@@ -70,16 +70,46 @@ function query(item) {
 }
 
 function parseResults(arr_of_results) {
-    const parsed_results = { 'results': { 'bindings': [] } };
+    const final_results = {
+        name: '',
+        description: '',
+        item_labels: [],
+        statements: [],
+    };
+
     for (let result of arr_of_results) {
-        const value = result['property_value_Label']['value'];
+
+        let value = result['property_value_Label']['value'];
+        
+        if (value.startsWith('http://commons.wikimedia.org/')) {
+            continue;
+        }
+        
         if (isValueADate(value)) {
             const [day, month, year] = getDayMonthYear(value);
-            result['property_value_Label']['value'] = day + ' ' + month + ' ' + year;
+            value = day + ' ' + month + ' ' + year;
+            result['property_value_Label']['value'] = value;
         }
-        parsed_results['results']['bindings'].push(result);
+
+        if (result.property.value === '__Name__') {
+            final_results.name = value;
+            continue;
+        }
+
+        if (result.property.value === '__Description__') {
+            final_results.description = value;
+            continue;
+        }
+
+        if (result.property.value === '__AlsoKnownAs__') {
+            final_results.item_labels.push(value);
+            continue;
+        }
+
+        final_results.statements.push(result);
+
     }
-    return parsed_results;
+    return final_results;
 }
 
 function isValueADate(val) {
