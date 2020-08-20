@@ -1,26 +1,26 @@
-const axios = require('axios');
-const express = require('express');
-const router = express.Router();
+import axios from 'axios';
 
 
 const SOLR_URL = 'http://localhost:8983/solr/crawl_index/select';
 //const SOLR_URL = 'http://localhost:8983/solr/ABCDE_core/select';
 
-router.post('/solr', async (req, res) => {
 
-    const { name, property, value, Q, limitToItemUrls } = req.body;
-    const { altLabels, item_altLabels, prop_altLabels, val_altLabels } = req.body['altLabelsData'];
+export async function get_solr_docs(name, property, value, Q, limitSearch, altLabelsData) {
+    let docs = [];
+    let status = false;
+
+    const { altLabels, item_altLabels, prop_altLabels, val_altLabels } = altLabelsData;
 
     // Append alternative labels to query in case user asked
     let alt_labels_string = '';
     if (altLabels) {
         alt_labels_string += appendLabels(item_altLabels);
         alt_labels_string += appendLabels(prop_altLabels);
-        alt_labels_string += appendLabels(val_altLabels );
+        alt_labels_string += appendLabels(val_altLabels);
     }
 
     // Append limit search to documents that appear in item's wikipedia page
-    const limit_search = (limitToItemUrls) ? (' AND Q:'+Q)  : '';
+    const limit_search = (limitSearch) ? (' AND Q:' + Q) : '';
 
     let data_to_query = `${name} ${property} ${alt_labels_string} ${value}`;
 
@@ -31,7 +31,7 @@ router.post('/solr', async (req, res) => {
         const solr_res = await axios({
             method: 'get',
             url: SOLR_URL,
-            params: { 
+            params: {
                 'fl': 'url, Q',
                 'hl': 'on',
                 'hl.method': 'unified',
@@ -41,28 +41,21 @@ router.post('/solr', async (req, res) => {
             },
         });
 
-        const docs = [];
         for (let url of Object.keys(solr_res['data']['highlighting'])) {
-            doc = {};
+            let doc = {};
             doc['url'] = url;
             doc['highlight'] = solr_res['data']['highlighting'][url]['content'][0];
             docs.push(doc);
         }
+        status = true;
 
-        res.json({ 'docs': docs });
-    }
-    catch (error) {
-        console.log(error);
-        res.send({ error_msg: error })
+    } catch (error) {
+        status = false;
     }
 
-});
-
+    return [docs, status];
+}
 
 function appendLabels(labels_arr) {
     return labels_arr.reduce((acc, label) => acc + label + ' ', '');
 }
-
-
-
-module.exports = router;

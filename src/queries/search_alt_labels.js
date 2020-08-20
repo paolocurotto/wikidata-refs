@@ -1,17 +1,17 @@
-const axios = require('axios');
-const express = require('express');
-const router = express.Router();
+import axios from 'axios';
 
 
 const WIKIDATA_URL = 'https://query.wikidata.org/sparql';
 
 
-router.post('/wikidata/search_similar_terms', async (req, res) => {
-
-    const { prop_number, val_type, val_url } = req.body;
-
-    let value_query = createValueSubQuery(val_type, val_url);
-    const query = createQuery(prop_number, value_query);
+export async function get_similar_terms(property_number, type, value_url) {
+    
+    const value_query = createValueSubQuery(type, value_url);
+    const query = createQuery(property_number, value_query);
+    
+    let prop_alt_labels = [];
+    let value_alt_labels = [];
+    let status = false;
 
     try {
         const wikidata_res = await axios({
@@ -22,15 +22,14 @@ router.post('/wikidata/search_similar_terms', async (req, res) => {
         });
 
         const response_data = createResponseData(wikidata_res);
-        console.log(response_data);
-        res.json(response_data);
+        prop_alt_labels = response_data.prop_alt_labels;
+        value_alt_labels = response_data.value_alt_labels;
+        status = true;
     }
-    catch (error) {
-        console.log(error);
-        res.send({ error_msg: error })
-    }
-});
+    catch (error) { status = false }
 
+    return [prop_alt_labels, value_alt_labels, status];
+}
 
 function createValueSubQuery(type, url) {
     if (type !== 'uri') {
@@ -69,15 +68,11 @@ function createResponseData(wikidata_data) {
         try {
             const item = row['item']['value'];
             const label = row['also_known_as']['value'];
-            
-            if (label === undefined) { continue }
 
-            if (item === 'property') {
-                response_data['prop_alt_labels'].push(label);
-            }
-            if (item === 'value') {
-                response_data['value_alt_labels'].push(label);
-            }
+            if (label === undefined) { continue }
+            if (item === 'property') { response_data['prop_alt_labels'].push(label) }
+            if (item === 'value') { response_data['value_alt_labels'].push(label) }
+            
         } catch (err) {
             continue;
         }
@@ -85,7 +80,3 @@ function createResponseData(wikidata_data) {
 
     return response_data;
 }
-
-
-
-module.exports = router;

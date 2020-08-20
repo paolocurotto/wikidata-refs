@@ -1,30 +1,35 @@
-const axios = require('axios');
-const express = require('express');
-const router = express.Router();
+import axios from 'axios';
 
 
 const WIKIDATA_URL = 'https://query.wikidata.org/sparql';
 
-router.get('/wikidata', async (req, res) => {
 
-    const item_identifier = req.query.item;
+export async function get_wikidata_item(item_number) {
+    let name = '';
+    let description = '';
+    let also_known_as = [];
+    let statements = [];
+    let status = false;
+
     try {
         const wikidata_res = await axios({
             method: 'get',
             url: WIKIDATA_URL,
             headers: { 'Accept': 'application/sparql-results+json' },
-            params: { 'format': 'json', 'query': query(item_identifier) },
+            params: { 'format': 'json', 'query': query(item_number) },
         });
 
         const parsed_results = parseResults(wikidata_res.data.results.bindings);
-        console.log(parsed_results);
-        res.json(parsed_results);
-    }
-    catch (error) {
-        res.send({ error_msg: error })
-    }
-});
+        name = parsed_results.name;
+        description = parsed_results.description;
+        also_known_as = parsed_results.item_labels;
+        statements = parsed_results.statements;
+        status = true;
 
+    } catch (error) { status = false }
+
+    return [name, description, also_known_as, statements, status];
+}
 
 function query(item) {
     return `SELECT ?propNumber ?property ?property_value_Label ?property_value_ (GROUP_CONCAT (DISTINCT ?reference; SEPARATOR=", ") AS ?references) {
@@ -80,11 +85,11 @@ function parseResults(arr_of_results) {
     for (let result of arr_of_results) {
 
         let value = result['property_value_Label']['value'];
-        
+
         if (value.startsWith('http://commons.wikimedia.org/')) {
             continue;
         }
-        
+
         if (isValueADate(value)) {
             const [day, month, year] = getDayMonthYear(value);
             value = day + ' ' + month + ' ' + year;
@@ -117,9 +122,9 @@ function isValueADate(val) {
 }
 
 function getDayMonthYear(date) {
-    let day   = date.substring(8, 10);
+    let day = date.substring(8, 10);
     let month = date.substring(5, 7);
-    let year  = date.substring(0, 4);
+    let year = date.substring(0, 4);
 
     if (day[0] === '0') {
         day = day.substring(1, 2);
@@ -142,9 +147,6 @@ function getDayMonthYear(date) {
     if (months.hasOwnProperty(month)) {
         month = months[month];
     }
-    
+
     return [day, month, year];
 }
-
-
-module.exports = router;

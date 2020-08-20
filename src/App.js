@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import StatementQuerier from './components/statement-querier/StatementQuerier';
 import Loader from './components/loader/Loader';
-import { get_wikidata_item } from './queries'
+import { get_wikidata_item } from './queries/get_wikidata_item';
+
 import './App.css';
 
 const App = () => {

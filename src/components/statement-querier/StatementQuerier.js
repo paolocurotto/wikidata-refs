@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import './StatementQuerier.css';
 import LoaderSmall from '../loader/LoaderSmall';
-import { get_solr_docs, get_similar_terms } from '../../queries';
+import { get_similar_terms } from '../../queries/search_alt_labels';
+import { get_solr_docs } from '../../queries/get_solr_docs';
 
 
 const StatementQuerier = (props) => {
 
-    const { Q, name, also_known_as, property, property_number, value, references } = props;
+    const { Q, name, also_known_as, property, property_number, value } = props;
     const { type, value: value_url } = props.value_url;
 
     const [docs,                setDocs]                = useState('');
@@ -46,8 +47,6 @@ const StatementQuerier = (props) => {
         }
     }
 
-    const referenceIcon = (references === '') ? <i className="cross material-icons">clear</i> : <i className="check material-icons">done</i>
-
     return (
         <div className="statement-wrapper">
             <div className="statement-box">
@@ -60,12 +59,6 @@ const StatementQuerier = (props) => {
                         <span className="statement-text"> Value: </span>
                         <span className="statement-value"> {value} </span>
                     </div>
-                    {/*
-                    <div className='statement-text-box'>
-                        <span className="statement-text"> Has external reference? </span>
-                        <span className="statement-value"> {referenceIcon} </span>
-                    </div>
-                    */}
                 </div>
 
                 <div className="statement-search-box">
